@@ -5,7 +5,7 @@ defmodule Chat.Repo.Migrations.CreateRoles do
     schema = "grupos"
 
     execute "CREATE SCHEMA IF NOT EXISTS #{schema}", "DROP SCHEMA IF EXISTS #{schema}"
-    execute "CREATE SCHEMA IF NOT EXISTS #{schema}", "DROP SCHEMA IF EXISTS #{schema}"
+
     create table(:roles, primary_key: false, prefix: schema) do
       add :id, :binary_id, primary_key: true
       add :name, :string, null: false, default: "MEMBER"

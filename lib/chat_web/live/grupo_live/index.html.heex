@@ -1,0 +1,41 @@
+<h1>Listing Grupos</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.grupo_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.GrupoLive.FormComponent}
+      id={@grupo.id || :new}
+      title={@page_title}
+      action={@live_action}
+      grupo={@grupo}
+      return_to={Routes.grupo_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Status</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="grupos">
+    <%= for grupo <- @grupos do %>
+      <tr id={"grupo-#{grupo.id}"}>
+        <td><%= grupo.name %></td>
+        <td><%= grupo.status %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.grupo_show_path(@socket, :show, grupo) %></span>
+          <span><%= live_patch "Edit", to: Routes.grupo_index_path(@socket, :edit, grupo) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: grupo.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Grupo", to: Routes.grupo_index_path(@socket, :new) %></span>

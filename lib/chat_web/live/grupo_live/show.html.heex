@@ -1,0 +1,31 @@
+<h1>Show Grupo</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.grupo_show_path(@socket, :show, @grupo)}>
+    <.live_component
+      module={ChatWeb.GrupoLive.FormComponent}
+      id={@grupo.id}
+      title={@page_title}
+      action={@live_action}
+      grupo={@grupo}
+      return_to={Routes.grupo_show_path(@socket, :show, @grupo)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @grupo.name %>
+  </li>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @grupo.status %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.grupo_show_path(@socket, :edit, @grupo), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.grupo_index_path(@socket, :index) %></span>

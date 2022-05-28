@@ -101,4 +101,100 @@ defmodule Chat.Grupos do
   def change_rol(%Rol{} = rol, attrs \\ %{}) do
     Rol.changeset(rol, attrs)
   end
+
+  alias Chat.Grupos.Grupo
+
+  @doc """
+  Returns the list of grupos.
+
+  ## Examples
+
+      iex> list_grupos()
+      [%Grupo{}, ...]
+
+  """
+  def list_grupos do
+    Repo.all(Grupo)
+  end
+
+  @doc """
+  Gets a single grupo.
+
+  Raises `Ecto.NoResultsError` if the Grupo does not exist.
+
+  ## Examples
+
+      iex> get_grupo!(123)
+      %Grupo{}
+
+      iex> get_grupo!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_grupo!(id), do: Repo.get!(Grupo, id)
+
+  @doc """
+  Creates a grupo.
+
+  ## Examples
+
+      iex> create_grupo(%{field: value})
+      {:ok, %Grupo{}}
+
+      iex> create_grupo(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_grupo(attrs \\ %{}) do
+    %Grupo{}
+    |> Grupo.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a grupo.
+
+  ## Examples
+
+      iex> update_grupo(grupo, %{field: new_value})
+      {:ok, %Grupo{}}
+
+      iex> update_grupo(grupo, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_grupo(%Grupo{} = grupo, attrs) do
+    grupo
+    |> Grupo.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a grupo.
+
+  ## Examples
+
+      iex> delete_grupo(grupo)
+      {:ok, %Grupo{}}
+
+      iex> delete_grupo(grupo)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_grupo(%Grupo{} = grupo) do
+    Repo.delete(grupo)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking grupo changes.
+
+  ## Examples
+
+      iex> change_grupo(grupo)
+      %Ecto.Changeset{data: %Grupo{}}
+
+  """
+  def change_grupo(%Grupo{} = grupo, attrs \\ %{}) do
+    Grupo.changeset(grupo, attrs)
+  end
 end
