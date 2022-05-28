@@ -1,0 +1,39 @@
+<h1>Listing Roles</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.rol_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.RolLive.FormComponent}
+      id={@rol.id || :new}
+      title={@page_title}
+      action={@live_action}
+      rol={@rol}
+      return_to={Routes.rol_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="roles">
+    <%= for rol <- @roles do %>
+      <tr id={"rol-#{rol.id}"}>
+        <td><%= rol.name %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.rol_show_path(@socket, :show, rol) %></span>
+          <span><%= live_patch "Edit", to: Routes.rol_index_path(@socket, :edit, rol) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: rol.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Rol", to: Routes.rol_index_path(@socket, :new) %></span>

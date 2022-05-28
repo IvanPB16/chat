@@ -1,0 +1,26 @@
+<h1>Show Rol</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.rol_show_path(@socket, :show, @rol)}>
+    <.live_component
+      module={ChatWeb.RolLive.FormComponent}
+      id={@rol.id}
+      title={@page_title}
+      action={@live_action}
+      rol={@rol}
+      return_to={Routes.rol_show_path(@socket, :show, @rol)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Name:</strong>
+    <%= @rol.name %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.rol_show_path(@socket, :edit, @rol), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.rol_index_path(@socket, :index) %></span>
