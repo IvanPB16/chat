@@ -1,0 +1,41 @@
+<h1>Listing Conversaciones</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.conversacion_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.ConversacionLive.FormComponent}
+      id={@conversacion.id || :new}
+      title={@page_title}
+      action={@live_action}
+      conversacion={@conversacion}
+      return_to={Routes.conversacion_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Status</th>
+      <th>From to</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="conversaciones">
+    <%= for conversacion <- @conversaciones do %>
+      <tr id={"conversacion-#{conversacion.id}"}>
+        <td><%= conversacion.status %></td>
+        <td><%= conversacion.from_to %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.conversacion_show_path(@socket, :show, conversacion) %></span>
+          <span><%= live_patch "Edit", to: Routes.conversacion_index_path(@socket, :edit, conversacion) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: conversacion.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Conversacion", to: Routes.conversacion_index_path(@socket, :new) %></span>

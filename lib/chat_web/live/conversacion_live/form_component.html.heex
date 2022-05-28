@@ -1,0 +1,24 @@
+<div>
+  <h2><%= @title %></h2>
+
+  <.form
+    let={f}
+    for={@changeset}
+    id="conversacion-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+  
+    <%= label f, :from_to %>
+    <%= text_input f, :from_to %>
+    <%= error_tag f, :from_to %>
+
+    <%= label f, :to %>
+    <%= text_input f, :to %>
+    <%= error_tag f, :to %>
+  
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+</div>

@@ -1,0 +1,31 @@
+<h1>Show Conversacion</h1>
+
+<%= if @live_action in [:edit] do %>
+  <.modal return_to={Routes.conversacion_show_path(@socket, :show, @conversacion)}>
+    <.live_component
+      module={ChatWeb.ConversacionLive.FormComponent}
+      id={@conversacion.id}
+      title={@page_title}
+      action={@live_action}
+      conversacion={@conversacion}
+      return_to={Routes.conversacion_show_path(@socket, :show, @conversacion)}
+    />
+  </.modal>
+<% end %>
+
+<ul>
+
+  <li>
+    <strong>Status:</strong>
+    <%= @conversacion.status %>
+  </li>
+
+  <li>
+    <strong>From to:</strong>
+    <%= @conversacion.from_to %>
+  </li>
+
+</ul>
+
+<span><%= live_patch "Edit", to: Routes.conversacion_show_path(@socket, :edit, @conversacion), class: "button" %></span> |
+<span><%= live_redirect "Back", to: Routes.conversacion_index_path(@socket, :index) %></span>
