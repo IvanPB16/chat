@@ -28,6 +28,13 @@ defmodule ChatWeb.Router do
 
     live "/conversaciones/:id", ConversacionLive.Show, :show
     live "/conversaciones/:id/show/edit", ConversacionLive.Show, :edit
+
+    live "/mensajes", MensajesLive.Index, :index
+    live "/mensajes/new", MensajesLive.Index, :new
+    live "/mensajes/:id/edit", MensajesLive.Index, :edit
+
+    live "/mensajes/:id", MensajesLive.Show, :show
+    live "/mensajes/:id/show/edit", MensajesLive.Show, :edit
   end
 
   # Other scopes may use custom stacks.

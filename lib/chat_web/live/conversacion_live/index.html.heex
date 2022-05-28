@@ -26,7 +26,8 @@
     <%= for conversacion <- @conversaciones do %>
       <tr id={"conversacion-#{conversacion.id}"}>
         <td><%= conversacion.status %></td>
-        <td><%= conversacion.from_to %></td>
+        <td><%= conversacion.from_to_id %></td>
+        <td><%= conversacion.to_id %></td>
 
         <td>
           <span><%= live_redirect "Show", to: Routes.conversacion_show_path(@socket, :show, conversacion) %></span>

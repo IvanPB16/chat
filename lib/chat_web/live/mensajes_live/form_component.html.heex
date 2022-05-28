@@ -4,11 +4,15 @@
   <.form
     let={f}
     for={@changeset}
-    id="conversacion-form"
+    id="mensajes-form"
     phx-target={@myself}
     phx-change="validate"
     phx-submit="save">
-  
+
+    <%= label f, :conversacion_id %>
+    <%= text_input f, :conversacion_id %>
+    <%= error_tag f, :conversacion_id %>
+
     <%= label f, :from_to_id %>
     <%= text_input f, :from_to_id %>
     <%= error_tag f, :from_to_id %>
@@ -16,6 +20,14 @@
     <%= label f, :to_id %>
     <%= text_input f, :to_id %>
     <%= error_tag f, :to_id %>
+  
+    <%= label f, :message %>
+    <%= text_input f, :message %>
+    <%= error_tag f, :message %>
+  
+    <%= label f, :status %>
+    <%= text_input f, :status %>
+    <%= error_tag f, :status %>
   
     <div>
       <%= submit "Save", phx_disable_with: "Saving..." %>

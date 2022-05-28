@@ -1,0 +1,41 @@
+<h1>Listing Mensajes</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.mensajes_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.MensajesLive.FormComponent}
+      id={@mensajes.id || :new}
+      title={@page_title}
+      action={@live_action}
+      mensajes={@mensajes}
+      return_to={Routes.mensajes_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Message</th>
+      <th>Status</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="mensajes">
+    <%= for mensajes <- @mensajes_collection do %>
+      <tr id={"mensajes-#{mensajes.id}"}>
+        <td><%= mensajes.message %></td>
+        <td><%= mensajes.status %></td>
+
+        <td>
+          <span><%= live_redirect "Show", to: Routes.mensajes_show_path(@socket, :show, mensajes) %></span>
+          <span><%= live_patch "Edit", to: Routes.mensajes_index_path(@socket, :edit, mensajes) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: mensajes.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New Mensajes", to: Routes.mensajes_index_path(@socket, :new) %></span>
