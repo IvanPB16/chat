@@ -2,10 +2,10 @@ import Config
 
 # Configure your database
 config :chat, Chat.Repo,
-  username: "postgres",
-  password: "postgres",
-  hostname: "localhost",
-  database: "chat_dev",
+  username: System.get_env("PSQL_USERNAME"),
+  password: System.get_env("PSQL_PASSWORD"),
+  database: System.get_env("PSQL_DATABASE"),
+  hostname: System.get_env("PSQL_HOSTNAME"),
   show_sensitive_data_on_connection_error: true,
   pool_size: 10
 
