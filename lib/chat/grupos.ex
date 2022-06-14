@@ -197,4 +197,100 @@ defmodule Chat.Grupos do
   def change_grupo(%Grupo{} = grupo, attrs \\ %{}) do
     Grupo.changeset(grupo, attrs)
   end
+
+  alias Chat.Grupos.UserGrupo
+
+  @doc """
+  Returns the list of user_grupo.
+
+  ## Examples
+
+      iex> list_user_grupo()
+      [%UserGrupo{}, ...]
+
+  """
+  def list_user_grupo do
+    Repo.all(UserGrupo)
+  end
+
+  @doc """
+  Gets a single user_grupo.
+
+  Raises `Ecto.NoResultsError` if the User grupo does not exist.
+
+  ## Examples
+
+      iex> get_user_grupo!(123)
+      %UserGrupo{}
+
+      iex> get_user_grupo!(456)
+      ** (Ecto.NoResultsError)
+
+  """
+  def get_user_grupo!(id), do: Repo.get!(UserGrupo, id)
+
+  @doc """
+  Creates a user_grupo.
+
+  ## Examples
+
+      iex> create_user_grupo(%{field: value})
+      {:ok, %UserGrupo{}}
+
+      iex> create_user_grupo(%{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def create_user_grupo(attrs \\ %{}) do
+    %UserGrupo{}
+    |> UserGrupo.changeset(attrs)
+    |> Repo.insert()
+  end
+
+  @doc """
+  Updates a user_grupo.
+
+  ## Examples
+
+      iex> update_user_grupo(user_grupo, %{field: new_value})
+      {:ok, %UserGrupo{}}
+
+      iex> update_user_grupo(user_grupo, %{field: bad_value})
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def update_user_grupo(%UserGrupo{} = user_grupo, attrs) do
+    user_grupo
+    |> UserGrupo.changeset(attrs)
+    |> Repo.update()
+  end
+
+  @doc """
+  Deletes a user_grupo.
+
+  ## Examples
+
+      iex> delete_user_grupo(user_grupo)
+      {:ok, %UserGrupo{}}
+
+      iex> delete_user_grupo(user_grupo)
+      {:error, %Ecto.Changeset{}}
+
+  """
+  def delete_user_grupo(%UserGrupo{} = user_grupo) do
+    Repo.delete(user_grupo)
+  end
+
+  @doc """
+  Returns an `%Ecto.Changeset{}` for tracking user_grupo changes.
+
+  ## Examples
+
+      iex> change_user_grupo(user_grupo)
+      %Ecto.Changeset{data: %UserGrupo{}}
+
+  """
+  def change_user_grupo(%UserGrupo{} = user_grupo, attrs \\ %{}) do
+    UserGrupo.changeset(user_grupo, attrs)
+  end
 end

@@ -112,4 +112,56 @@ defmodule Chat.GruposTest do
       assert %Ecto.Changeset{} = Grupos.change_grupo(grupo)
     end
   end
+
+  describe "user_grupo" do
+    alias Chat.Grupos.UserGrupo
+
+    import Chat.GruposFixtures
+
+    @invalid_attrs %{}
+
+    test "list_user_grupo/0 returns all user_grupo" do
+      user_grupo = user_grupo_fixture()
+      assert Grupos.list_user_grupo() == [user_grupo]
+    end
+
+    test "get_user_grupo!/1 returns the user_grupo with given id" do
+      user_grupo = user_grupo_fixture()
+      assert Grupos.get_user_grupo!(user_grupo.id) == user_grupo
+    end
+
+    test "create_user_grupo/1 with valid data creates a user_grupo" do
+      valid_attrs = %{}
+
+      assert {:ok, %UserGrupo{} = user_grupo} = Grupos.create_user_grupo(valid_attrs)
+    end
+
+    test "create_user_grupo/1 with invalid data returns error changeset" do
+      assert {:error, %Ecto.Changeset{}} = Grupos.create_user_grupo(@invalid_attrs)
+    end
+
+    test "update_user_grupo/2 with valid data updates the user_grupo" do
+      user_grupo = user_grupo_fixture()
+      update_attrs = %{}
+
+      assert {:ok, %UserGrupo{} = user_grupo} = Grupos.update_user_grupo(user_grupo, update_attrs)
+    end
+
+    test "update_user_grupo/2 with invalid data returns error changeset" do
+      user_grupo = user_grupo_fixture()
+      assert {:error, %Ecto.Changeset{}} = Grupos.update_user_grupo(user_grupo, @invalid_attrs)
+      assert user_grupo == Grupos.get_user_grupo!(user_grupo.id)
+    end
+
+    test "delete_user_grupo/1 deletes the user_grupo" do
+      user_grupo = user_grupo_fixture()
+      assert {:ok, %UserGrupo{}} = Grupos.delete_user_grupo(user_grupo)
+      assert_raise Ecto.NoResultsError, fn -> Grupos.get_user_grupo!(user_grupo.id) end
+    end
+
+    test "change_user_grupo/1 returns a user_grupo changeset" do
+      user_grupo = user_grupo_fixture()
+      assert %Ecto.Changeset{} = Grupos.change_user_grupo(user_grupo)
+    end
+  end
 end

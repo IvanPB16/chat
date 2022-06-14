@@ -1,0 +1,39 @@
+<h1>Listing User grupo</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.user_grupo_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.UserGrupoLive.FormComponent}
+      id={@user_grupo.id || :new}
+      title={@page_title}
+      action={@live_action}
+      user_grupo={@user_grupo}
+      return_to={Routes.user_grupo_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="user_grupo">
+    <%= for user_grupo <- @user_grupo_collection do %>
+      <tr id={"user_grupo-#{user_grupo.id}"}>
+        <td><%= user_grupo.grupo_id %></td>
+        <td><%= user_grupo.rol_id %></td>
+        <td><%= user_grupo.user_id %></td>
+        <td>
+          <span><%= live_redirect "Show", to: Routes.user_grupo_show_path(@socket, :show, user_grupo) %></span>
+          <span><%= live_patch "Edit", to: Routes.user_grupo_index_path(@socket, :edit, user_grupo) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: user_grupo.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New User grupo", to: Routes.user_grupo_index_path(@socket, :new) %></span>

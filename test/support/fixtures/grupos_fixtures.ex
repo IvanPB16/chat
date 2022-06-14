@@ -32,4 +32,18 @@ defmodule Chat.GruposFixtures do
 
     grupo
   end
+
+  @doc """
+  Generate a user_grupo.
+  """
+  def user_grupo_fixture(attrs \\ %{}) do
+    {:ok, user_grupo} =
+      attrs
+      |> Enum.into(%{
+
+      })
+      |> Chat.Grupos.create_user_grupo()
+
+    user_grupo
+  end
 end
