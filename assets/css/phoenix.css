@@ -91,7 +91,7 @@ pre{padding: 1em;}
   border-radius: 50%;
 }
 
-#contacts-list-content{
+.contacts-list-content{
   display:  flex;
   justify-content: center;
 }

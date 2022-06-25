@@ -7,6 +7,8 @@ defmodule Chat.Conversaciones do
   alias Chat.Repo
 
   alias Chat.Conversaciones.Conversacion
+  alias Chat.Accounts.User
+  alias Chat.Conversaciones.Mensajes
 
   @doc """
   Returns the list of conversaciones.
@@ -19,6 +21,29 @@ defmodule Chat.Conversaciones do
   """
   def list_conversaciones do
     Repo.all(Conversacion)
+  end
+
+   @doc """
+  Returns the list of conversaciones by session.
+
+  ## Examples
+
+      iex> list_conversaciones_session()
+      [%Conversacion{}, ...]
+
+  """
+  def list_conversaciones_session(user_id) do
+    query = from c in Conversacion, where: c.to_id == ^user_id or c.from_to_id == ^user_id,
+      join: u in User, on: c.from_to_id == u.id,
+      select: %{
+        id: c.id,
+        from_to_id: c.from_to_id,
+        status: c.status,
+        username: u.username,
+        email: u.email,
+        update_at: fragment("to_char(?,'HH:MI')", c.updated_at)
+      }
+    Repo.all(query)
   end
 
   @doc """
@@ -102,7 +127,42 @@ defmodule Chat.Conversaciones do
     Conversacion.changeset(conversacion, attrs)
   end
 
-  alias Chat.Conversaciones.Mensajes
+  @doc """
+  Returns the list of mensajes.
+
+  ## Examples
+
+      iex> list_mensajes()
+      [%Mensajes{}, ...]
+
+  """
+  def list_mensajes do
+    Repo.all(Mensajes)
+  end
+
+  @doc """
+  Returns the list of mensajes by conversacion.
+
+  ## Examples
+
+      iex> list_mensajes()
+      [%Mensajes{}, ...]
+
+  """
+  def list_mensajes_conversation(id) do
+    query = from m in Mensajes, where: m.conversacion_id == ^id,
+    select: %{
+      id: m.id,
+      message: m.message,
+      status: m.status,
+      conversacion_id: m.conversacion_id,
+      from_to_id: m.from_to_id,
+      to_id: m.to_id,
+      inserted_at: fragment("to_char(?,'HH:MI')", m.inserted_at)
+    }
+
+    Repo.all(query)
+  end
 
   @doc """
   Returns the list of mensajes.

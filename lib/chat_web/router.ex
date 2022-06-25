@@ -18,11 +18,11 @@ defmodule ChatWeb.Router do
   end
 
   scope "/", ChatWeb do
-    pipe_through :browser
+    pipe_through [:browser, :require_authenticated_user]
 
-    get "/", PageController, :index
+    get "/page", PageController, :index
 
-    live "/conversaciones", ConversacionLive.Index, :index
+    live "/", ConversacionLive.Index, :index
     live "/conversaciones/new", ConversacionLive.Index, :new
     live "/conversaciones/:id/edit", ConversacionLive.Index, :edit
 
