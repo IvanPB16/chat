@@ -1,41 +1,73 @@
-<section class="phx-hero">
-  <h1><%= gettext "Welcome to %{name}!", name: "Phoenix" %></h1>
-  <p>Peace of mind from prototype to production</p>
-</section>
-
-<section class="row">
-  <article class="column">
-    <h2>Resources</h2>
-    <ul>
-      <li>
-        <a href="https://hexdocs.pm/phoenix/overview.html">Guides &amp; Docs</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix">Source</a>
-      </li>
-      <li>
-        <a href="https://github.com/phoenixframework/phoenix/blob/v1.6/CHANGELOG.md">v1.6 Changelog</a>
-      </li>
-    </ul>
-  </article>
-  <article class="column">
-    <h2>Help</h2>
-    <ul>
-      <li>
-        <a href="https://elixirforum.com/c/phoenix-forum">Forum</a>
-      </li>
-      <li>
-        <a href="https://web.libera.chat/#elixir">#elixir on Libera Chat (IRC)</a>
-      </li>
-      <li>
-        <a href="https://twitter.com/elixirphoenix">Twitter @elixirphoenix</a>
-      </li>
-      <li>
-        <a href="https://elixir-slackin.herokuapp.com/">Elixir on Slack</a>
-      </li>
-      <li>
-        <a href="https://discord.gg/elixir">Elixir on Discord</a>
-      </li>
-    </ul>
-  </article>
-</section>
+<div class="row">
+  <div class="column">
+    <section id="contacts-information">
+      <div id="contacts-information-content">
+          <img class="contacts-img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+        <div class="contacts-icons">
+          <button>
+            <FontAwesome.LiveView.icon name="message" class="h-1 w-1 contacts-search-icon"/>
+          </button>
+          <button>
+            <FontAwesome.LiveView.icon name="ellipsis-vertical" class="h-1 w-1 contacts-search-icon"/>
+          </button>
+        </div>
+      </div>
+    </section>
+    <section id="contacts-search">
+      <div class="contacts-search-content">
+        <FontAwesome.LiveView.icon name="magnifying-glass" class="h-1 w-1 contacts-search-icon"/>
+        <input class="contacts-search-input" type="text" placeholder="Buscar una conversacion">
+      </div>
+    </section>
+    <section id="contacts-list" class="scrollbar">
+      <%= for grupo <- Enum.to_list(1..15) do %>
+        <section >
+          <div id="contacts-list-content">
+            <div class="contacts-list-profile-content">
+              <img class="contacts-list-profile" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+            </div>
+            <div class="contacts-list-content-info">
+              <span class="contacts-list-name">Ivan Peralta Bonilla</span>
+              <span class="contacts-list-time"> 15:00</span>
+              <br>
+              <span class="contacts-list-message"> Este es un nuevo mensaje, es un nuevo mensaje es un nuevo mensaje es un nuevo mensaje es un nuevo mensaje</span>
+            </div>      
+          </div>
+        </section>
+      <% end %>
+    </section>
+  </div>
+  <div class="column">
+    <div class="message-header">
+      <section>
+        <div id="contacts-list-content">
+          <div class="contacts-list-profile-content">
+            <img class="contacts-list-profile" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+          </div>
+          <div class="contacts-list-content-info">
+            <span class="contacts-list-name">Ivan Peralta Bonilla</span>
+            <br>
+            <span class="contacts-list-message"> En linea</span>
+          </div>      
+        </div>
+      </section>
+    </div>
+    <div class="scrollbar">
+      <div class="message-content-left">
+        <p>Hola</p>
+        <span class="time-right">11:00</span>
+      </div>
+      <div class="message-content-right">
+        <p>Hols</p>
+        <span class="time-right">11:00</span>
+      </div>
+   
+    </div>
+    <div class="message-input">
+      <input type="text" placeholder="Mensaje" name="" class="message-input-field">
+      <button>
+        <FontAwesome.LiveView.icon name="paper-plane" class="h-1 w-1 message-input-icon"/>
+      </button>
+    </div>
+  </div>
+</div>
