@@ -1,4 +1,6 @@
 <div>
+  <h2><%= @title %></h2>
+
   <.form
     let={f}
     for={@changeset}
@@ -6,13 +8,17 @@
     phx-target={@myself}
     phx-change="validate"
     phx-submit="save">
+  
+    <%= label f, "Email" %>
     <%= hidden_input f, :from_to_id %>
-    <%= hidden_input f, :to_id %>
-    <div class="message-input">
-      <%= text_input f, :message, class: "message-input-field", placeholder: "Escribe un mensaje", required: true %>
-      <button type="submit" phx-disable-with="Sending...">
-        <FontAwesome.LiveView.icon name="paper-plane" class="h-1 w-1 message-input-icon"/>
-      </button>
+    <%= text_input f, :mask %>
+    <%= error_tag f, :from_to_id %>
+
+
+    <%= hidden_input f, :to_id, value: @to_id %>
+  
+    <div>
+      <%= submit "Agreguar", phx_disable_with: "Saving..." %>
     </div>
   </.form>
 </div>

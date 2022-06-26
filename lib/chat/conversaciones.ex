@@ -10,6 +10,20 @@ defmodule Chat.Conversaciones do
   alias Chat.Accounts.User
   alias Chat.Conversaciones.Mensajes
 
+
+  @topic inspect(__MODULE__)
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Chat.PubSub, @topic)
+  end
+
+  def broadcast({:ok, record}, event) do
+    Phoenix.PubSub.broadcast(Chat.PubSub, @topic, {event, record})
+    {:ok, record}
+  end
+
+  def broadcast({:error, _} = error, _event), do: error
+
   @doc """
   Returns the list of conversaciones.
 
@@ -33,11 +47,33 @@ defmodule Chat.Conversaciones do
 
   """
   def list_conversaciones_session(user_id) do
-    query = from c in Conversacion, where: c.to_id == ^user_id or c.from_to_id == ^user_id,
+    l1 = get_conversation_to(user_id)
+    l2 = get_conversation_from(user_id)
+
+    l1 ++ l2
+  end
+
+  defp get_conversation_to(id) do
+    query = from c in Conversacion,
       join: u in User, on: c.from_to_id == u.id,
+      where: c.to_id == ^id,
       select: %{
         id: c.id,
         from_to_id: c.from_to_id,
+        status: c.status,
+        username: u.username,
+        email: u.email,
+        update_at: fragment("to_char(?,'HH:MI')", c.updated_at)
+      }
+    Repo.all(query)
+  end
+  defp get_conversation_from(id) do
+    query = from c in Conversacion,
+      join: u in User, on: c.to_id == u.id,
+      where: c.from_to_id == ^id,
+      select: %{
+        id: c.id,
+        from_to_id: c.to_id,
         status: c.status,
         username: u.username,
         email: u.email,
@@ -158,7 +194,8 @@ defmodule Chat.Conversaciones do
       conversacion_id: m.conversacion_id,
       from_to_id: m.from_to_id,
       to_id: m.to_id,
-      inserted_at: fragment("to_char(?,'HH:MI')", m.inserted_at)
+      inserted_at: fragment("to_char(?,'HH:MI')", m.inserted_at),
+      type: "ONE"
     }
 
     Repo.all(query)
@@ -209,6 +246,7 @@ defmodule Chat.Conversaciones do
     %Mensajes{}
     |> Mensajes.changeset(attrs)
     |> Repo.insert()
+    |> broadcast(:message_inserted)
   end
 
   @doc """

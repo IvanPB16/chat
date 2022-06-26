@@ -6,7 +6,7 @@ defmodule Chat.Accounts do
   import Ecto.Query, warn: false
   alias Chat.Repo
 
-  alias Chat.Accounts.{User, UserToken, UserNotifier}
+  alias Chat.Accounts.{User, UserToken, UserNotifier, UserSchema}
 
   ## Database getters
 
@@ -349,5 +349,36 @@ defmodule Chat.Accounts do
       {:ok, %{user: user}} -> {:ok, user}
       {:error, :user, changeset, _} -> {:error, changeset}
     end
+  end
+
+  @doc """
+  Gets a user by id.
+
+  ## Examples
+
+      iex> get_user_by_email(id)
+      %User{}
+
+      iex> get_user_by_email("")
+      nil
+
+  """
+  def get_user_by_id(id)do
+    Repo.get_by(UserSchema, id: id)
+  end
+  @doc """
+  Gets a user by id.
+
+  ## Examples
+
+      iex> get_user_by_email(id)
+      %User{}
+
+      iex> get_user_by_email("")
+      nil
+
+  """
+  def search_user_by_email(email) when is_binary(email) do
+    Repo.get_by(UserSchema, email: email)
   end
 end

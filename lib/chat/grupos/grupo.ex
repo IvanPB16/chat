@@ -7,7 +7,7 @@ defmodule Chat.Grupos.Grupo do
   @foreign_key_type :binary_id
   schema "grupos" do
     field :name, :string
-    field :status, :string
+    field :status, :string, default: "ACTIVE"
 
     timestamps()
   end
@@ -16,6 +16,6 @@ defmodule Chat.Grupos.Grupo do
   def changeset(grupo, attrs) do
     grupo
     |> cast(attrs, [:name, :status])
-    |> validate_required([:name, :status])
+    |> validate_required([:name])
   end
 end

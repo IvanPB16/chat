@@ -9,6 +9,7 @@ defmodule Chat.Conversaciones.Conversacion do
   schema "conversaciones" do
     field :status, :string, default: "ACTIVE"
     field :to_id, :binary_id
+    field :mask, :string, virtual: true
     field :from_to_id, :binary_id
 
     timestamps()
@@ -17,7 +18,7 @@ defmodule Chat.Conversaciones.Conversacion do
   @doc false
   def changeset(conversacion, attrs) do
     conversacion
-    |> cast(attrs, [:status, :from_to_id, :to_id])
+    |> cast(attrs, [:status, :from_to_id, :to_id, :mask])
     |> validate_required([:from_to_id, :to_id])
     |> unique_constraint([:from_to_id, :to_id])
   end

@@ -40,13 +40,13 @@ defmodule ChatWeb.GrupoLive.FormComponent do
     end
   end
 
-  defp save_grupo(socket, :new, grupo_params) do
+  defp save_grupo(socket, :grupo, grupo_params) do
     case Grupos.create_grupo(grupo_params) do
       {:ok, _grupo} ->
         {:noreply,
          socket
          |> put_flash(:info, "Grupo created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+         |> push_redirect(to: "/")}
 
       {:error, %Ecto.Changeset{} = changeset} ->
         {:noreply, assign(socket, changeset: changeset)}

@@ -1,15 +1,47 @@
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.conversacion_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.ConversacionLive.FormComponent}
+      id={@conversation.id || :new}
+      title={@page_title}
+      action={@live_action}
+      conversacion={@conversation}
+      to_id={@user_id}
+      return_to={Routes.conversacion_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+<%= if @live_action in [:grupo] do %>
+  <.modal return_to={Routes.grupo_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.GrupoLive.FormComponent}
+      id={@grupo.id || :new}
+      title={@page_title}
+      action={@live_action}
+      grupo={@grupo}
+      return_to={Routes.grupo_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
 <div class="row">
   <div class="column">
     <section id="contacts-information">
       <div id="contacts-information-content">
         <img class="contacts-img" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
+        <%= if is_nil(@information.username), do: @information.email, else: @information.username %>
         <div class="contacts-icons">
-          <button>
+          <%= live_patch to: Routes.conversacion_index_path(@socket, :new) do %>
             <FontAwesome.LiveView.icon name="message" class="h-1 w-1 contacts-search-icon"/>
-          </button>
-          <button>
+          <% end %>
+          <button class="dropdown">
             <FontAwesome.LiveView.icon name="ellipsis-vertical" class="h-1 w-1 contacts-search-icon"/>
+            <ul class="dropdown-content">
+              <%= live_patch to: Routes.conversacion_index_path(@socket, :grupo) do %>
+                <li>Nuevo grupo</li>
+              <% end %>
+            </ul>
           </button>
+
         </div>
       </div>
     </section>
@@ -27,7 +59,7 @@
               <img class="contacts-list-profile" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
             </div>
             <div class="contacts-list-content-info">
-              <span class="contacts-list-name"><%= if is_nil(conversacion.username), do: conversacion.email, else: conversacion.username    %></span>
+              <span class="contacts-list-name"><%= if is_nil(conversacion.username), do: conversacion.email, else: conversacion.username %></span>
               <span class="contacts-list-time"> <%= conversacion.update_at %></span>
               <!--<br>
               <span class="contacts-list-message"> Este es un nuevo mensaje, es un nuevo mensaje es un nuevo mensaje es un nuevo mensaje es un nuevo mensaje</span>-->
@@ -44,11 +76,19 @@
           <div class="contacts-list-profile-content">
             <img class="contacts-list-profile" src="https://www.w3schools.com/howto/img_avatar.png" alt="">
           </div>
-          <div class="contacts-list-content-info">
-            <span class="contacts-list-name"><%= @user_id %></span>
-            <br>
-            <span class="contacts-list-message"> En linea</span>
-          </div>      
+          <%= if is_nil(@information_conversation) do %>
+            <div class="contacts-list-content-info">
+              <span class="contacts-list-name"></span>
+              <br>
+              <%#=<span class="contacts-list-message"> En linea</span> %>
+            </div>      
+            <% else %>
+              <div class="contacts-list-content-info">
+              <span class="contacts-list-name"><%= if is_nil(@information_conversation.username), do: @information_conversation.email, else: @information_conversation.username %></span>
+              <br>
+              <%#=<span class="contacts-list-message"> En linea</span> %>
+            </div> 
+          <% end %>
         </div>
       </section>
     </div>

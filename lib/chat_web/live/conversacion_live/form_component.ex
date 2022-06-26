@@ -2,6 +2,7 @@ defmodule ChatWeb.ConversacionLive.FormComponent do
   use ChatWeb, :live_component
 
   alias Chat.Conversaciones
+  alias Chat.Accounts
 
   @impl true
   def update(%{conversacion: conversacion} = assigns, socket) do
@@ -41,15 +42,29 @@ defmodule ChatWeb.ConversacionLive.FormComponent do
   end
 
   defp save_conversacion(socket, :new, conversacion_params) do
-    case Conversaciones.create_conversacion(conversacion_params) do
-      {:ok, _conversacion} ->
-        {:noreply,
-         socket
-         |> put_flash(:info, "Conversacion created successfully")
-         |> push_redirect(to: socket.assigns.return_to)}
+    IO.inspect(conversacion_params)
+    email = Accounts.search_user_by_email(conversacion_params["mask"])
+    IO.inspect email
+    if !is_nil(email) do
+      IO.inspect email
+      newMap = Map.put(conversacion_params, "from_to_id", email.id) |> Map.put("mask", conversacion_params["from_to_id"])
+      IO.inspect(conversacion_params, label: "conversacion_params")
+      IO.inspect(newMap, label: "newMap")
+      case Conversaciones.create_conversacion(newMap ) do
+        {:ok, _conversacion} ->
+          {:noreply,
+           socket
+           |> put_flash(:info, "Conversacion created successfully")
+           |> push_redirect(to: socket.assigns.return_to)}
 
-      {:error, %Ecto.Changeset{} = changeset} ->
-        {:noreply, assign(socket, changeset: changeset)}
+        {:error, %Ecto.Changeset{} = changeset} ->
+          {:noreply, assign(socket, changeset: changeset)}
+      end
+    else
+      {:noreply,
+           socket
+           |> put_flash(:error, "Usuario no encontrado")
+           |> push_redirect(to: "/conversaciones/new")}
     end
   end
 end
