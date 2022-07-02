@@ -63,7 +63,8 @@ defmodule Chat.Conversaciones do
         status: c.status,
         username: u.username,
         email: u.email,
-        update_at: fragment("to_char(?,'HH:MI')", c.updated_at)
+        update_at: fragment("to_char(?,'HH:MI')", c.updated_at),
+        type: "ONE"
       }
     Repo.all(query)
   end
@@ -77,7 +78,8 @@ defmodule Chat.Conversaciones do
         status: c.status,
         username: u.username,
         email: u.email,
-        update_at: fragment("to_char(?,'HH:MI')", c.updated_at)
+        update_at: fragment("to_char(?,'HH:MI')", c.updated_at),
+        type: "ONE"
       }
     Repo.all(query)
   end

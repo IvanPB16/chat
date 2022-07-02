@@ -7,6 +7,24 @@ defmodule Chat.Grupos do
   alias Chat.Repo
 
   alias Chat.Grupos.Rol
+  alias Chat.Grupos.Grupo
+  alias Chat.Grupos.UserGrupo
+
+  def lista_grupos_by_user_id(user_id) do
+    query = from g in Grupo,
+    join: ug in UserGrupo, on: g.id == ug.grupo_id,
+      where: ug.user_id == ^user_id,
+      select: %{
+        id: g.id,
+        username: g.name,
+        from_to_id: "",
+        status: g.status,
+        email: g.name,
+        update_at: fragment("to_char(?,'HH:MI')", g.updated_at),
+        type: "GRUOP"
+      }
+    Repo.all(query) |> IO.inspect
+  end
 
   @doc """
   Returns the list of roles.
@@ -102,8 +120,6 @@ defmodule Chat.Grupos do
     Rol.changeset(rol, attrs)
   end
 
-  alias Chat.Grupos.Grupo
-
   @doc """
   Returns the list of grupos.
 
@@ -132,6 +148,16 @@ defmodule Chat.Grupos do
 
   """
   def get_grupo!(id), do: Repo.get!(Grupo, id)
+  def get_grupo_select!(id) do
+    query = from g in Grupo,
+      where: g.id == ^id,
+      select: %{
+        id: g.id,
+        email: g.name,
+        username: g.name
+      }
+    Repo.one!(query)
+  end
 
   @doc """
   Creates a grupo.
@@ -197,8 +223,6 @@ defmodule Chat.Grupos do
   def change_grupo(%Grupo{} = grupo, attrs \\ %{}) do
     Grupo.changeset(grupo, attrs)
   end
-
-  alias Chat.Grupos.UserGrupo
 
   @doc """
   Returns the list of user_grupo.

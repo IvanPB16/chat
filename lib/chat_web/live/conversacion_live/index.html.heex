@@ -19,6 +19,7 @@
       title={@page_title}
       action={@live_action}
       grupo={@grupo}
+      user_id={@user_id}
       return_to={Routes.grupo_index_path(@socket, :index)}
     />
   </.modal>
@@ -53,7 +54,7 @@
     </section>
     <section id="contacts-list" class="scrollbar">
       <%= for conversacion <- @conversaciones do %>
-        <section id={conversacion.id} phx-click="select_conversation" phx-value-conversation={conversacion.id} phx-value-fromToId={conversacion.from_to_id}>
+        <section id={conversacion.id} phx-click="select_conversation" phx-value-conversation={conversacion.id} phx-value-fromToId={conversacion.from_to_id} phx-value-type={conversacion.type}>
           <div class="contacts-list-content">
             <div class="contacts-list-profile-content">
               <img class="contacts-list-profile" src="https://www.w3schools.com/howto/img_avatar.png" alt="">

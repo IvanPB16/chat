@@ -42,7 +42,12 @@ defmodule ChatWeb.GrupoLive.FormComponent do
 
   defp save_grupo(socket, :grupo, grupo_params) do
     case Grupos.create_grupo(grupo_params) do
-      {:ok, _grupo} ->
+      {:ok, grupo} ->
+        user_grupo_params = %{
+          "grupo_id" => grupo.id,
+          "user_id" => grupo_params["user_id"]
+        }
+        Grupos.create_user_grupo(user_grupo_params)
         {:noreply,
          socket
          |> put_flash(:info, "Grupo created successfully")

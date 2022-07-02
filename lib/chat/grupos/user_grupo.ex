@@ -9,7 +9,7 @@ defmodule Chat.Grupos.UserGrupo do
 
     field :user_id, :binary_id
     field :grupo_id, :binary_id
-    field :rol_id, :binary_id
+    field :rol_id, :binary_id, default: "c2a78891-6a8a-4d54-ba94-5e84487f8c57"
 
     timestamps()
   end
@@ -18,7 +18,7 @@ defmodule Chat.Grupos.UserGrupo do
   def changeset(user_grupo, attrs) do
     user_grupo
     |> cast(attrs, [:user_id, :grupo_id, :rol_id])
-    |> validate_required([:user_id, :grupo_id, :rol_id])
+    |> validate_required([:user_id, :grupo_id])
     |> unique_constraint([:user_id, :grupo_id, :rol_id])
   end
 end

@@ -2,6 +2,7 @@ defmodule ChatWeb.ConversacionLive.Index do
   use ChatWeb, :live_view
 
   alias Chat.Accounts
+  alias Chat.Grupos
   alias Chat.Conversaciones
   alias Chat.Conversaciones.Conversacion
   alias Chat.Grupos.Grupo
@@ -28,6 +29,7 @@ defmodule ChatWeb.ConversacionLive.Index do
 
   end
 
+  @impl true
   def handle_info({:message_inserted, new_message},socket) do
     IO.inspect new_message, label: "new_message"
     {:noreply, assign(socket, mensajes: list_mensajes_conversation(new_message.conversacion_id), from_to: new_message.from_to_id, conversacion_id: new_message.conversacion_id)}
@@ -72,16 +74,23 @@ defmodule ChatWeb.ConversacionLive.Index do
   end
 
   @impl true
-  def handle_event("select_conversation", %{ "conversation" => conversation, "fromtoid" => fromtoid}, socket) do
-    mensajes = list_mensajes_conversation(conversation)
-    information = get_information_conversation(fromtoid)
-
-    {:noreply, assign(socket, mensajes: mensajes, from_to: fromtoid, conversacion_id: conversation, information_conversation: information)}
+  def handle_event("select_conversation", %{ "conversation" => conversation, "fromtoid" => fromtoid, "type" => type}, socket) do
+    IO.inspect type
+    case type do
+      "ONE" ->
+        IO.inspect "here one"
+        mensajes = list_mensajes_conversation(conversation)
+        information = get_information_conversation(fromtoid)
+        {:noreply, assign(socket, mensajes: mensajes, from_to: fromtoid, conversacion_id: conversation, information_conversation: information)}
+      "GRUOP" ->
+        IO.inspect "here group"
+        information= get_information_group(conversation) |> IO.inspect
+        {:noreply, assign(socket, mensajes: [], from_to: "", conversacion_id: "", information_conversation: information)}
+    end
   end
 
   @impl true
   def handle_event("save", %{"form" => form}, socket) do
-    IO.inspect form
     case Conversaciones.create_mensajes(form) do
       {:ok, conversacion} ->
         IO.inspect(conversacion)
@@ -93,6 +102,7 @@ defmodule ChatWeb.ConversacionLive.Index do
           |> assign(:conversacion_id, form["conversacion_id"])
         }
       {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect changeset
         {:noreply,
           socket
           |> assign(:mensajes, list_mensajes_conversation(form["conversacion_id"]))
@@ -103,7 +113,9 @@ defmodule ChatWeb.ConversacionLive.Index do
   end
 
   defp list_conversaciones(id) do
-    Conversaciones.list_conversaciones_session(id)
+    l1 = Conversaciones.list_conversaciones_session(id)
+    l2 = list_conversaciones_grupos(id)
+    l1 ++ l2
   end
 
   defp list_mensajes_conversation(id) do
@@ -111,6 +123,14 @@ defmodule ChatWeb.ConversacionLive.Index do
   end
 
   defp get_information_conversation(id) do
-    Accounts.get_user_by_id(id)
+    Accounts.get_user_by_id(id) |> IO.inspect
+  end
+
+  defp get_information_group(id) do
+    Grupos.get_grupo_select!(id)
+  end
+
+  defp list_conversaciones_grupos(id) do
+    Grupos.lista_grupos_by_user_id(id)
   end
 end

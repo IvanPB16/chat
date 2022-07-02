@@ -42,14 +42,9 @@ defmodule ChatWeb.ConversacionLive.FormComponent do
   end
 
   defp save_conversacion(socket, :new, conversacion_params) do
-    IO.inspect(conversacion_params)
     email = Accounts.search_user_by_email(conversacion_params["mask"])
-    IO.inspect email
     if !is_nil(email) do
-      IO.inspect email
       newMap = Map.put(conversacion_params, "from_to_id", email.id) |> Map.put("mask", conversacion_params["from_to_id"])
-      IO.inspect(conversacion_params, label: "conversacion_params")
-      IO.inspect(newMap, label: "newMap")
       case Conversaciones.create_conversacion(newMap ) do
         {:ok, _conversacion} ->
           {:noreply,
