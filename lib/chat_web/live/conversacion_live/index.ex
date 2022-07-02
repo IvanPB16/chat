@@ -6,11 +6,13 @@ defmodule ChatWeb.ConversacionLive.Index do
   alias Chat.Conversaciones
   alias Chat.Conversaciones.Conversacion
   alias Chat.Grupos.Grupo
+  alias Chat.Grupos.UserGrupo
 
   @impl true
   def mount(_params, %{"user_token" => user_token}, socket) do
     if connected?(socket) do
       Conversaciones.subscribe()
+      Grupos.subscribe()
     end
 
     current_user = Accounts.get_user_by_session_token(user_token)
@@ -18,15 +20,24 @@ defmodule ChatWeb.ConversacionLive.Index do
       {:ok, assign(socket,
         conversaciones: list_conversaciones(current_user.id),
         mensajes: [],
+        mensajesGrupo: [],
         user_id: current_user.id,
         information: Accounts.get_user_by_id(current_user.id),
-        information_conversation: nil)}
+        information_conversation: nil,
+        type: "")}
     else
       {:ok,
          socket
          |> push_redirect(to: "/users/log_in")}
     end
 
+  end
+
+  @impl true
+  def handle_info({:msg_group, message},socket) do
+    IO.inspect socket, label: "socket.msg_group"
+    IO.inspect message, label: "message"
+    {:noreply, assign(socket, mensajesGrupo: list_message_group(message.grupo_id), from_to: message.from_to_id, conversacion_id: message.grupo_id)}
   end
 
   @impl true
@@ -46,6 +57,7 @@ defmodule ChatWeb.ConversacionLive.Index do
     |> assign(:conversation, %Conversacion{})
     |> assign(:from_to, nil)
     |> assign(:mensajes, [])
+    |> assign(:mensajesGrupo, [])
     |> assign(:from_to, nil)
     |> assign(:conversacion, %Conversacion{})
     |> assign(:conversacion_id, nil)
@@ -58,15 +70,31 @@ defmodule ChatWeb.ConversacionLive.Index do
     |> assign(:conversation, %Conversacion{})
     |> assign(:from_to, nil)
     |> assign(:mensajes, [])
+    |> assign(:mensajesGrupo, [])
     |> assign(:from_to, nil)
     |> assign(:conversacion, %Conversacion{})
     |> assign(:conversacion_id, nil)
+  end
+
+  defp apply_action(socket, :participante, _params) do
+    socket
+    |> assign(:page_title, "Nuevo Participante")
+    |> assign(:conversation, %Conversacion{})
+    |> assign(:from_to, nil)
+    |> assign(:mensajes, [])
+    |> assign(:mensajesGrupo, [])
+    |> assign(:from_to, nil)
+    |> assign(:conversacion, %Conversacion{})
+    |> assign(:conversacion_id, nil)
+    |> assign(:grupo, %Grupo{})
+    |> assign(:user_grupo, %UserGrupo{})
   end
 
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Chat")
     |> assign(:mensajes, [])
+    |> assign(:mensajesGrupo, [])
     |> assign(:from_to, nil)
     |> assign(:conversacion, %Conversacion{})
     |> assign(:conversacion_id, nil)
@@ -75,26 +103,76 @@ defmodule ChatWeb.ConversacionLive.Index do
 
   @impl true
   def handle_event("select_conversation", %{ "conversation" => conversation, "fromtoid" => fromtoid, "type" => type}, socket) do
-    IO.inspect type
     case type do
       "ONE" ->
-        IO.inspect "here one"
         mensajes = list_mensajes_conversation(conversation)
         information = get_information_conversation(fromtoid)
-        {:noreply, assign(socket, mensajes: mensajes, from_to: fromtoid, conversacion_id: conversation, information_conversation: information)}
+        {:noreply, assign(socket, mensajes: mensajes, from_to: fromtoid, conversacion_id: conversation, information_conversation: information, type: "")}
       "GRUOP" ->
-        IO.inspect "here group"
-        information= get_information_group(conversation) |> IO.inspect
-        {:noreply, assign(socket, mensajes: [], from_to: "", conversacion_id: "", information_conversation: information)}
+        information= get_information_group(conversation) |> IO.inspect(label: "information_conversation")
+        {:noreply, assign(socket, mensajesGrupo: list_message_group(conversation), from_to: "", conversacion_id: conversation, information_conversation: information, type: "group")}
     end
   end
 
   @impl true
   def handle_event("save", %{"form" => form}, socket) do
+    type = Map.get(form, "type")
+    create_message(socket, type, form)
+  end
+
+  defp list_conversaciones(id) do
+    l1 = Conversaciones.list_conversaciones_session(id)
+    l2 = list_conversaciones_grupos(id)
+    l1 ++ l2
+  end
+
+  defp list_mensajes_conversation(id) do
+    Conversaciones.list_mensajes_conversation(id)
+  end
+
+  defp list_message_group(id)  do
+    Grupos.list_message_grupo(id)
+  end
+
+  defp get_information_conversation(id) do
+    Accounts.get_user_by_id(id) |> Map.put(:type, "one")
+  end
+
+  defp get_information_group(id) do
+    Grupos.get_grupo_select!(id) |> Map.put(:type, "group")
+  end
+
+  defp list_conversaciones_grupos(id) do
+    Grupos.lista_grupos_by_user_id(id)
+  end
+
+  defp create_message(socket, type, form) when type == "group" do
+    from_to = Map.get(form, "to_id")
+    group_id = Map.get(form, "conversacion_id")
+    new_map = Map.put(form, "from_to_id", from_to) |> Map.put("grupo_id", group_id)
+    {:noreply, socket}
+    case Grupos.create_message_grupo(new_map) do
+      {:ok, _conversacion} ->
+        {:noreply,
+          socket
+          |> assign(:mensajesGrupo, list_message_group(form["conversacion_id"]))
+          |> assign(:from_to, form["to_id"])
+          |> assign(:conversacion_id, form["conversacion_id"])
+        }
+      {:error, %Ecto.Changeset{} = changeset} ->
+        IO.inspect changeset
+        {:noreply,
+          socket
+          |> assign(:mensajesGrupo, list_message_group(form["conversacion_id"]))
+          |> assign(:from_to, form["to_id"])
+          |> assign(:conversacion_id, form["conversacion_id"])
+        }
+    end
+  end
+
+  defp create_message(socket, _type, form)do
     case Conversaciones.create_mensajes(form) do
-      {:ok, conversacion} ->
-        IO.inspect(conversacion)
-        IO.inspect list_mensajes_conversation(conversacion.id)
+      {:ok, _conversacion} ->
         {:noreply,
           socket
           |> assign(:mensajes, list_mensajes_conversation(form["conversacion_id"]))
@@ -112,25 +190,4 @@ defmodule ChatWeb.ConversacionLive.Index do
     end
   end
 
-  defp list_conversaciones(id) do
-    l1 = Conversaciones.list_conversaciones_session(id)
-    l2 = list_conversaciones_grupos(id)
-    l1 ++ l2
-  end
-
-  defp list_mensajes_conversation(id) do
-    Conversaciones.list_mensajes_conversation(id)
-  end
-
-  defp get_information_conversation(id) do
-    Accounts.get_user_by_id(id) |> IO.inspect
-  end
-
-  defp get_information_group(id) do
-    Grupos.get_grupo_select!(id)
-  end
-
-  defp list_conversaciones_grupos(id) do
-    Grupos.lista_grupos_by_user_id(id)
-  end
 end

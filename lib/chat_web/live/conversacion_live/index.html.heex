@@ -12,7 +12,7 @@
   </.modal>
 <% end %>
 <%= if @live_action in [:grupo] do %>
-  <.modal return_to={Routes.grupo_index_path(@socket, :index)}>
+  <.modal return_to={Routes.conversacion_index_path(@socket, :index)}>
     <.live_component
       module={ChatWeb.GrupoLive.FormComponent}
       id={@grupo.id || :new}
@@ -20,7 +20,22 @@
       action={@live_action}
       grupo={@grupo}
       user_id={@user_id}
-      return_to={Routes.grupo_index_path(@socket, :index)}
+      return_to={Routes.conversacion_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+<%= if @live_action in [:participante] do %>
+  <.modal return_to={Routes.conversacion_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.UserGrupoLive.FormComponent}
+      id={@user_grupo.id || :new}
+      title={@page_title}
+      action={:new}
+      user_grupo={@user_grupo}
+      information={@information_conversation}
+      user_id={@user_id}
+      list={Chat.Conversaciones.list_conversaciones_session(@user_id)}
+      return_to={Routes.conversacion_index_path(@socket, :index)}
     />
   </.modal>
 <% end %>
@@ -84,19 +99,52 @@
               <%#=<span class="contacts-list-message"> En linea</span> %>
             </div>      
             <% else %>
-              <div class="contacts-list-content-info">
-              <span class="contacts-list-name"><%= if is_nil(@information_conversation.username), do: @information_conversation.email, else: @information_conversation.username %></span>
-              <br>
-              <%#=<span class="contacts-list-message"> En linea</span> %>
+            <div class="contacts-list-content-info">
+              <div class="clearfix">
+                <span class="contacts-list-name"><%= if is_nil(@information_conversation.username), do: @information_conversation.email, else: @information_conversation.username %></span>
+                  <%= if @information_conversation.type == "group" do %>
+                    <div class="dropdown float-right">
+                      <FontAwesome.LiveView.icon name="ellipsis-vertical" class="h-1 w-1 contacts-search-icon"/>
+                      <ul class="dropdown-content">
+                        <%= live_patch to: Routes.conversacion_index_path(@socket, :participante) do %>
+                          <li>Añadir a participante</li>
+                        <% end %>
+                      </ul>
+                    </div>
+                  <% end %>
+                  
+                  <%#=<span class="contacts-list-message"> En linea</span> %>
+              </div>
             </div> 
           <% end %>
         </div>
       </section>
     </div>
     <div class="scrollbar">
+      <%= if(@type == "") do %>
+        <ol class="conversation">
+          <%= for mensajes <- @mensajes do %>
+            <%= if mensajes.to_id === @user_id do %>
+              <li class="message-content-left">
+                <div class="mensaje mensaje-l">
+                  <p><%= mensajes.message %> </p>
+                  <span class="time-right"><%= mensajes.inserted_at %></span>
+                </div>
+              </li>
+            <% else %>
+              <li class="message-content-right">
+                <div class="mensaje mensaje-r">
+                  <p><%= mensajes.message %></p>
+                  <span class="time-right"><%= mensajes.inserted_at %></span>
+                </div>
+              </li>
+            <% end %>
+          <% end %>
+        </ol>   
+      <% else %>
       <ol class="conversation">
-        <%= for mensajes <- @mensajes do %>
-          <%= if mensajes.to_id === @user_id do %>
+        <%= for mensajes <- @mensajesGrupo do %>
+          <%= if mensajes.from_to_id === @user_id do %>
             <li class="message-content-left">
               <div class="mensaje mensaje-l">
                 <p><%= mensajes.message %> </p>
@@ -106,13 +154,15 @@
           <% else %>
             <li class="message-content-right">
               <div class="mensaje mensaje-r">
+                <label><%= mensajes.email %></label>
                 <p><%= mensajes.message %></p>
                 <span class="time-right"><%= mensajes.inserted_at %></span>
               </div>
             </li>
           <% end %>
         <% end %>
-      </ol>   
+      </ol> 
+      <% end %>
     </div>
     <div style="margin: 0; padding: 0;">
       <form
@@ -121,7 +171,7 @@
         <%= hidden_input :form, :from_to_id, value: @from_to, required: true  %>
         <%= hidden_input :form, :to_id, value: @user_id, required: true  %>
         <%= hidden_input :form, :conversacion_id, value: @conversacion_id, required: true  %>
-        <%= hidden_input :form, :type, required: true  %>
+        <%= hidden_input :form, :type, value: @type, required: true  %>
         <div class="message-input">
           <%= text_input :form, :message, class: "message-input-field", placeholder: "Escribe un mensaje", required: true %>
           <button phx-disable-with="Sending...">

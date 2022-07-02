@@ -18,6 +18,9 @@ defmodule Chat.Conversaciones do
   end
 
   def broadcast({:ok, record}, event) do
+    IO.inspect record, label: "here"
+    IO.inspect @topic, label: "@topic"
+    IO.inspect event, label: "event"
     Phoenix.PubSub.broadcast(Chat.PubSub, @topic, {event, record})
     {:ok, record}
   end

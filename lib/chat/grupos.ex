@@ -9,6 +9,29 @@ defmodule Chat.Grupos do
   alias Chat.Grupos.Rol
   alias Chat.Grupos.Grupo
   alias Chat.Grupos.UserGrupo
+  alias Chat.Grupos.MessageGroups
+  alias Chat.Accounts.User
+
+  @topic inspect(__MODULE__)
+
+  def subscribe do
+    Phoenix.PubSub.subscribe(Chat.PubSub, @topic)
+  end
+
+
+  def broadcast({:ok, record}, event) do
+    IO.inspect record, label: "here"
+    IO.inspect @topic, label: "@topic"
+    IO.inspect event, label: "event"
+    IO.inspect Chat.PubSub, label: "Chat.PubSub"
+    Phoenix.PubSub.broadcast(Chat.PubSub, @topic, {event, record})
+    {:ok, record}
+  end
+
+  def broadcast({:error, _} = error, _event) do
+    IO.inspect error, label: "error"
+     error
+  end
 
   def lista_grupos_by_user_id(user_id) do
     query = from g in Grupo,
@@ -316,5 +339,33 @@ defmodule Chat.Grupos do
   """
   def change_user_grupo(%UserGrupo{} = user_grupo, attrs \\ %{}) do
     UserGrupo.changeset(user_grupo, attrs)
+  end
+
+  def list_message_grupo(id) do
+    query = from m in MessageGroups, where: m.grupo_id == ^id,
+    join: u in User, on: m.from_to_id == u.id,
+    select: %{
+      username: u.username,
+      email: u.email,
+      id: m.id,
+      message: m.message,
+      status: m.status,
+      grupo_id: m.id,
+      from_to_id: m.from_to_id,
+      inserted_at: fragment("to_char(?,'HH:MI')", m.inserted_at),
+      type: "GROUP"
+    }
+    Repo.all(query)
+  end
+
+  def create_message_grupo(attrs \\ %{}) do
+    %MessageGroups{}
+    |> MessageGroups.changeset(attrs)
+    |> Repo.insert()
+    |> broadcast(:msg_group)
+  end
+
+  def change_message_grupo(%MessageGroups{} = message_grupo, attrs \\ %{}) do
+    MessageGroups.changeset(message_grupo, attrs)
   end
 end

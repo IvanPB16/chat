@@ -25,6 +25,7 @@ defmodule ChatWeb.Router do
     live "/", ConversacionLive.Index, :index
     live "/conversaciones/new", ConversacionLive.Index, :new
     live "/conversaciones/grupo", ConversacionLive.Index, :grupo
+    live "/conversaciones/participante", ConversacionLive.Index, :participante
     live "/conversaciones/:id/edit", ConversacionLive.Index, :edit
 
     live "/conversaciones/:id", ConversacionLive.Show, :show
