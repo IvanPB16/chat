@@ -5,8 +5,8 @@ defmodule ChatWeb.ConversacionLive.Index do
   alias Chat.Grupos
   alias Chat.Conversaciones
   alias Chat.Conversaciones.Conversacion
-  alias Chat.Grupos.Grupo
-  alias Chat.Grupos.UserGrupo
+  alias Chat.Grupos.{Grupo, UserGrupo}
+  alias Chat.Files.{File, FileGroup}
 
   @impl true
   def mount(_params, %{"user_token" => user_token}, socket) do
@@ -61,6 +61,8 @@ defmodule ChatWeb.ConversacionLive.Index do
     |> assign(:from_to, nil)
     |> assign(:conversacion, %Conversacion{})
     |> assign(:conversacion_id, nil)
+    |> assign(:file, %File{})
+    |> assign(:file_group, %FileGroup{})
     |> assign(:grupo, %Grupo{})
   end
 
@@ -73,6 +75,9 @@ defmodule ChatWeb.ConversacionLive.Index do
     |> assign(:mensajesGrupo, [])
     |> assign(:from_to, nil)
     |> assign(:conversacion, %Conversacion{})
+    |> assign(:grupo, %Grupo{})
+    |> assign(:file, %File{})
+    |> assign(:file_group, %FileGroup{})
     |> assign(:conversacion_id, nil)
   end
 
@@ -87,9 +92,42 @@ defmodule ChatWeb.ConversacionLive.Index do
     |> assign(:conversacion, %Conversacion{})
     |> assign(:conversacion_id, nil)
     |> assign(:grupo, %Grupo{})
+    |> assign(:file, %File{})
+    |> assign(:file_group, %FileGroup{})
     |> assign(:user_grupo, %UserGrupo{})
   end
 
+  defp apply_action(socket, :file_conversation, _params) do
+    socket
+    |> assign(:page_title, "Nuevo archivo")
+    |> assign(:conversation, %Conversacion{})
+    |> assign(:from_to, nil)
+    |> assign(:mensajes, [])
+    |> assign(:mensajesGrupo, [])
+    |> assign(:from_to, nil)
+    |> assign(:conversacion, %Conversacion{})
+    |> assign(:conversacion_id, nil)
+    |> assign(:grupo, %Grupo{})
+    |> assign(:file, %File{})
+    |> assign(:file_group, %FileGroup{})
+    |> assign(:user_grupo, %UserGrupo{})
+  end
+
+  defp apply_action(socket, :file_group, _params) do
+    socket
+    |> assign(:page_title, "Nuevo archivo")
+    |> assign(:conversation, %Conversacion{})
+    |> assign(:file, %File{})
+    |> assign(:file_group, %FileGroup{})
+    |> assign(:from_to, nil)
+    |> assign(:mensajes, [])
+    |> assign(:mensajesGrupo, [])
+    |> assign(:from_to, nil)
+    |> assign(:conversacion, %Conversacion{})
+    |> assign(:conversacion_id, nil)
+    |> assign(:grupo, %Grupo{})
+    |> assign(:user_grupo, %UserGrupo{})
+  end
   defp apply_action(socket, :index, _params) do
     socket
     |> assign(:page_title, "Chat")

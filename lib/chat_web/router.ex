@@ -26,6 +26,8 @@ defmodule ChatWeb.Router do
     live "/conversaciones/new", ConversacionLive.Index, :new
     live "/conversaciones/grupo", ConversacionLive.Index, :grupo
     live "/conversaciones/participante", ConversacionLive.Index, :participante
+    live "/conversaciones/files", ConversacionLive.Index, :file_conversation
+    live "/conversaciones/files_group", ConversacionLive.Index, :file_group
     live "/conversaciones/:id/edit", ConversacionLive.Index, :edit
 
     live "/conversaciones/:id", ConversacionLive.Show, :show
@@ -58,6 +60,13 @@ defmodule ChatWeb.Router do
 
     live "/user_grupo/:id", UserGrupoLive.Show, :show
     live "/user_grupo/:id/show/edit", UserGrupoLive.Show, :edit
+
+    live "/files", FileLive.Index, :index
+    live "/files/new", FileLive.Index, :new
+
+    live "/files_group", FileGroupLive.Index, :index
+    live "/files_group/new", FileGroupLive.Index, :new
+
   end
 
   # Other scopes may use custom stacks.

@@ -1,0 +1,56 @@
+<div>
+  <h2><%= @title %></h2>  
+  <.form
+    let={f}
+    for={@changeset}
+    id="file-form"
+    phx-target={@myself}
+    phx-change="validate"
+    phx-submit="save">
+
+    <%= for err <- upload_errors(@uploads.avatar) do %>
+      <p class="alert alert-danger"><%= error_to_string(err) %></p>
+    <% end %>
+
+    <%= live_file_input @uploads.avatar %>
+
+    <%= label f, :conversacion_id %>
+    <%= text_input f, :conversacion_id, value: @conversacion_id  %>
+    
+    <%= label f, :to_id %>
+    <%= text_input f, :to_id, value: @conversation.to_id  %>
+    
+    <%= label f, :from_to_id %>
+    <%= text_input f, :from_to_id, value: @conversation.from_to_id %>
+    
+    <div>
+      <%= submit "Save", phx_disable_with: "Saving..." %>
+    </div>
+  </.form>
+  
+    <%= for entry <- @uploads.avatar.entries do %>
+      <article class="upload-entry">
+    
+        <figure style="height: 100px; width: 100px;">
+          <%= live_img_preview entry %>
+          <figcaption><%= entry.client_name %></figcaption>
+        </figure>
+    
+        
+        <progress value={entry.progress} max="100"> <%= entry.progress %>% </progress>
+    
+        
+        
+        <a href="#" phx-click="cancel-entry" phx-value-ref={entry.ref} phx-target={@myself}>
+          cancelar &times;
+        </a>
+        
+        <%= for err <- upload_errors(@uploads.avatar, entry) do %>
+          <p class="alert alert-danger"><%= error_to_string(err) %></p>
+        <% end %>
+    
+      </article>
+    <% end %>
+     
+</div>
+

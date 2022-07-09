@@ -1,0 +1,10 @@
+<.live_component
+  module={ChatWeb.FileLive.FormComponent}
+  id={@file.id || :new}
+  title={@page_title}
+  action={@live_action}
+  file={@file}
+  conversacion_id= {@conversacion_id}
+  conversation= {@conversation}
+  return_to={Routes.file_index_path(@socket, :index)}
+/>

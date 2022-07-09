@@ -1,4 +1,4 @@
-defmodule Chat.Repo.Migrations.CreateUserGrupo do
+defmodule Chat.Repo.Migrations.CreateMessageGrupo do
   use Ecto.Migration
 
   def change do
@@ -14,8 +14,8 @@ defmodule Chat.Repo.Migrations.CreateUserGrupo do
       timestamps()
     end
 
-    execute("ALTER TABLE #{schema}.user_grupo ALTER COLUMN id SET DEFAULT uuid_generate_v4();","")
-    execute("ALTER TABLE #{schema}.user_grupo ALTER COLUMN inserted_at SET DEFAULT now();","")
-    execute("ALTER TABLE #{schema}.user_grupo ALTER COLUMN updated_at SET DEFAULT now();","")
+    execute("ALTER TABLE #{schema}.message_groups ALTER COLUMN id SET DEFAULT uuid_generate_v4();","")
+    execute("ALTER TABLE #{schema}.message_groups ALTER COLUMN inserted_at SET DEFAULT now();","")
+    execute("ALTER TABLE #{schema}.message_groups ALTER COLUMN updated_at SET DEFAULT now();","")
   end
 end

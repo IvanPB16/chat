@@ -207,19 +207,6 @@ defmodule Chat.Conversaciones do
   end
 
   @doc """
-  Returns the list of mensajes.
-
-  ## Examples
-
-      iex> list_mensajes()
-      [%Mensajes{}, ...]
-
-  """
-  def list_mensajes do
-    Repo.all(Mensajes)
-  end
-
-  @doc """
   Gets a single mensajes.
 
   Raises `Ecto.NoResultsError` if the Mensajes does not exist.

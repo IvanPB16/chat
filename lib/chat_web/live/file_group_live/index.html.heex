@@ -1,0 +1,40 @@
+<h1>Listing Files group</h1>
+
+<%= if @live_action in [:new, :edit] do %>
+  <.modal return_to={Routes.file_group_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.FileGroupLive.FormComponent}
+      id={@file_group.id || :new}
+      title={@page_title}
+      action={@live_action}
+      file_group={@file_group}
+      return_to={Routes.file_group_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+
+<table>
+  <thead>
+    <tr>
+      <th>Name</th>
+      <th>Path</th>
+
+      <th></th>
+    </tr>
+  </thead>
+  <tbody id="files_group">
+    <%= for file_group <- @files_group do %>
+      <tr id={"file_group-#{file_group.id}"}>
+        <td><%= file_group.name %></td>
+        <td><%= file_group.path %></td>
+
+        <td>
+          <span><%= live_patch "Edit", to: Routes.file_group_index_path(@socket, :edit, file_group) %></span>
+          <span><%= link "Delete", to: "#", phx_click: "delete", phx_value_id: file_group.id, data: [confirm: "Are you sure?"] %></span>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<span><%= live_patch "New File group", to: Routes.file_group_index_path(@socket, :new) %></span>

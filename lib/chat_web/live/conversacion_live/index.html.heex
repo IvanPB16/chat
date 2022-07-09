@@ -39,6 +39,32 @@
     />
   </.modal>
 <% end %>
+<%= if @live_action in [:file_conversation] do %>
+  <.modal return_to={Routes.conversacion_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.FileLive.FormComponent}
+      id={@file.id || :new}
+      title={@page_title}
+      action={@live_action}
+      file={@file}
+      conversation_id={@conversacion_id}
+      return_to={Routes.conversacion_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
+<%= if @live_action in [:file_group] do %>
+  <.modal return_to={Routes.conversacion_index_path(@socket, :index)}>
+    <.live_component
+      module={ChatWeb.FileGroupLive.FormComponent}
+      id={@file_group.id || :new}
+      title={@page_title}
+      action={@live_action}
+      file_group={@file_group}
+      conversation_id={@conversacion_id}
+      return_to={Routes.conversacion_index_path(@socket, :index)}
+    />
+  </.modal>
+<% end %>
 <div class="row">
   <div class="column">
     <section id="contacts-information">
@@ -174,6 +200,16 @@
         <%= hidden_input :form, :type, value: @type, required: true  %>
         <div class="message-input">
           <%= text_input :form, :message, class: "message-input-field", placeholder: "Escribe un mensaje", required: true %>
+          <%= if(@type == "") do %>
+            <%= live_patch to: Routes.file_index_path(@socket, :index, conversacion_id: @conversacion_id) do %>
+              <FontAwesome.LiveView.icon name="paperclip" class="h-1 w-1 message-input-icon"/>
+            <% end %>
+          <% else %>
+            <%= live_patch to: Routes.file_group_index_path(@socket, :index, conversacion_id: @conversacion_id) do %>
+              <FontAwesome.LiveView.icon name="paperclip" class="h-1 w-1 message-input-icon"/>
+            <% end %>
+          <% end %>
+
           <button phx-disable-with="Sending...">
             <FontAwesome.LiveView.icon name="paper-plane" class="h-1 w-1 message-input-icon"/>
           </button>
